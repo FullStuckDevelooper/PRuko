@@ -19,18 +19,14 @@
     <li class="nav-item">
       <a class="nav-link" href="<?= base_url(); ?>user">
         <i class="fas fa-fw fa-list"></i>
-        <span>CRUD Daftar Ruangan</span></a>
+        <span>CRUD Daftar Ruko</span></a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="<?= base_url(); ?>user/daftarRuang">
-        <i class="fas fa-fw fa-list"></i>
-        <span>Daftar Ruangan</span></a>
-    </li>
+  
     
     <li class="nav-item">
       <a class="nav-link" href="<?= base_url(); ?>user/histori">
         <i class="fas fa-fw fa-history"></i>
-        <span>History Peminjaman</span></a>
+        <span>Penyewaan User</span></a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="<?= base_url();?>user/logout" data-toggle="modal" data-target="#logoutModal">
@@ -41,9 +37,7 @@
     <hr class="sidebar-divider d-none d-md-block">
 
     <!-- Sidebar Toggler (Sidebar) -->
-    <div class="text-center d-none d-md-inline">
-      <button class="rounded-circle border-0" id="sidebarToggle"></button>
-    </div>
+    
 
   </ul>
   <!-- End of Sidebar -->

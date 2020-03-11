@@ -7,9 +7,8 @@
         <thead class="thead-dark">
             <tr>
                 <th>No</th>
-                <th>Nama Peminjam</th>
-                <th>Ruangan</th>
-                <th>Tanggal Pinjam</th>
+                <th>Nama Penyewa</th>
+                <th>Tipe Ruko</th>
                 <th class="text-center">Status</th>
             </tr>
         </thead>
@@ -19,17 +18,18 @@
                 <tr>
                     <td><?= $no++; ?></td>
                     <td><?= $row->nama; ?></td>
-                    <td><?= $row->ruangan; ?></td>
-                    <td><?= $row->tanggal; ?></td>
+                    <td><?= $row->tipe; ?></td>
+                    
+
                     <?php
-                    if ($row->status == 'Ditolak') {
-                        echo '<td><button class="btn btn-danger form-control">Ditolak</button></td>';
-                    } else if ($row->status == 'Diterima') {
-                        echo '<td><button class="btn btn-success form-control">Diterima</button></td>';
-                    } else if ($row->status == 'Pending') {
-                        echo '<td><a class="btn btn-info form-control" href="'.base_url("user/accPinjam/".$row->id).'">'.$row->status.'</a></td>';
-                    }
-                    ?>
+                        if ($row->status == 'Ditolak') {
+                            echo '<td><button class="btn btn-danger form-control">Ditolak</button></td>';
+                        } else if ($row->status == 'Lunas') {
+                            echo '<td><button class="btn btn-success form-control">Lunas</button></td>';
+                        } else if ($row->status == 'Pending') {
+                            echo '<td><a class="btn btn-info form-control" href="' . base_url("user/terima/" . $row->id) . '">' . $row->status . '</a></td>';
+                        }
+                        ?>
                 </tr>
             <?php } ?>
         </tbody>

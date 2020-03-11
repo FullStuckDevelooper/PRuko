@@ -7,8 +7,8 @@ class User extends CI_Controller {
 	{
 
 		$data['title'] = "Sistem Peminjaman Ruangan";
-		$data['query'] = $this->db->get('Ruangan');
-
+		$data['query'] = $this->db->get('ruko');
+		$data['namauser'] = $this->session->userdata('nama');
 		$this->load->view('template/header',$data);
 		$this->load->view('user/template/sidebar');
 		$this->load->view('user/template/topbar');
@@ -20,13 +20,23 @@ class User extends CI_Controller {
 	{
 
 		$data['title'] = "Sistem Peminjaman Ruangan";
-		$data['query'] = $this->db->get('Ruangan');
+		$data['namauser'] = $this->session->userdata('nama');
+		$data['query'] = $this->db->get('ruko');
 
-		$this->load->view('template/header', $data);
-		$this->load->view('user/template/sidebarUser');
-		$this->load->view('user/template/topbar');
-		$this->load->view('user/daftarRuang');
-		$this->load->view('user/template/footer');
+		
+		
+
+		
+		$this->db->select('u.id as uid ,r.id as rid ,s.id as sid , r.tipe as tipe , r.harga as harga , s.status as status ');
+		$this->db->from('user as u, ruko as r, sewa as s');
+		$this->db->where('u.id', $this->session->userdata('id'));
+		$this->db->where('s.user_id=u.id');
+		$this->db->where('s.ruko_id = r.id');
+
+		$data['bebas'] = $this->db->get();
+		
+		$this->load->view('user/peminjaman',$data);
+	
 	}
 
 	public function daftarRuang()
@@ -34,18 +44,18 @@ class User extends CI_Controller {
 
 		$data['title'] = "Sistem Peminjaman Ruangan";
 		$data['query'] = $this->db->get('Ruangan');
-
+		$data['namauser'] = $this->session->userdata('nama');
 		$this->load->view('template/header', $data);
 		$this->load->view('user/template/sidebar');
 		$this->load->view('user/template/topbar');
-		$this->load->view('user/daftarRuang');
+		$this->load->view('user/daftarRuangAdmin');
 		$this->load->view('user/template/footer');
 	}
 	//mahasiswa
 	public function pinjam_ruangan(){
 		$data['title'] = "Sistem Peminjaman Ruangan";
 		$data['query'] = $this->db->get('Ruangan');
-		
+		$data['namauser'] = $this->session->userdata('nama');
 		$this->load->view('template/header',$data);
 		$this->load->view('user/template/sidebarUser');
 		$this->load->view('user/template/topbar');
@@ -56,12 +66,11 @@ class User extends CI_Controller {
 	public function histori()
 	{
 		$data['title'] = "Sistem Peminjaman Ruangan";
-		
+		$data['namauser'] = $this->session->userdata('nama');
 
 
-		$data['query']=$this->db->query( 'SELECT user.nama as nama, ruangan.nama_ruangan as ruangan, pinjam.id_pinjam as id ,
-		 pinjam.tanggal as tanggal , 
-		 pinjam.status as status FROM (user,ruangan,pinjam) WHERE pinjam.user_id = user.id and pinjam.ruangan_id = ruangan.id');
+		$data['query']=$this->db->query( 'SELECT user.nama as nama, ruko.tipe as tipe, sewa.status as status , sewa.id as id
+		  FROM (user,ruko,sewa) WHERE sewa.user_id = user.id and sewa.ruko_id = ruko.id');
 		
 
 
@@ -77,7 +86,7 @@ class User extends CI_Controller {
 	public function histori_user()
 	{
 		$data['title'] = "Sistem Peminjaman Ruangan";
-
+		$data['namauser'] = $this->session->userdata('nama');
 		$this->db->select('r.nama_ruangan as nama, r.kode_ruangan as kode, p.tanggal as tanggal, p.alasan,p.status as status');
 		$this->db->from('user as u, ruangan as r, pinjam as p');
 		$this->db->where('p.user_id', $this->session->userdata('id'));
@@ -97,88 +106,68 @@ class User extends CI_Controller {
 	}
 
 	public function tambah_ruangan(){
-		$nama_ruangan = $this->input->post('nama_ruangan');
-		$kode_ruangan = $this->input->post('kode_ruangan');
+		$tipe = $this->input->post('tipe');
+		$luas = $this->input->post('luas');
+		$kamar= $this->input->post('kamar');
+		$harga = $this->input->post('harga');
+		$photo = $this->input->post('photo');
 
 		$data = array(
-			'nama_ruangan' => $nama_ruangan,
-			'kode_ruangan' => $kode_ruangan,
+			'tipe' => $tipe,
+			'luas' => $luas,
+			'kamar'=> $kamar,
+			'harga'=>$harga,
+			'photo'=>$photo,
+	
 		);
 
-		$this->db->insert('Ruangan',$data);
+		$this->db->insert('ruko',$data);
 		redirect('user');
 	}
 
 	public function hapus_ruangan($data){
 		$this->db->where('id', $data);
-		$this->db->delete('Ruangan');
+		$this->db->delete('ruko');
 		redirect('user');
 	}
 
 	public function form_minjam($query){
 
-		$data['title'] = "Sistem Peminjaman Ruangan";
- 		$data['query'] = $this->db->get_where('Ruangan', array('id' => $query));
-		$data['user']  = $this->db->get_where('user',['nama'=>$this->session->userdata('nama')])->row_array();
 		
-		 $this->load->view('template/header', $data);
-		$this->load->view('user/template/sidebarUser');
-		$this->load->view('user/template/topbar');
-		$this->load->view('user/pinjam_ruangan');
-		$this->load->view('user/template/footer');
+ 		$data['query'] = $this->db->get_where('ruko', array('id' => $query));
+		$data['user']  = $this->db->get_where('user',['nama'=>$this->session->userdata('nama')])->row_array();
+		$data['namauser'] = $this->session->userdata('nama');
+		$this->load->view('user/detail',$data);
+		
 	}
 	
 	public function pinjam(){
 		$user_id	= $this->input->post('user_id');
-		$ruangan_id = $this->input->post('ruangan_id');
-		$tanggal	= $this->input->post('tanggal');
-		$alasan 	= $this->input->post('alasan');
+		$ruko_id = $this->input->post('ruko_id');
+		$pembayaran = $this->input->post('pembayaran');
 		
-		$user = $this->db->get_where('pinjam', ['ruangan_id' => $ruangan_id, 'tanggal' => $tanggal])->row_array();
 		
-		$data['query'] = $user;
 		
-		$this->db->where('ruangan_id',$ruangan_id);
-		$this->db->where('tanggal',$tanggal);
-		$ada = $this->db->get('pinjam')->num_rows();
-		if($user && $ada > 0){
-			echo '<script>alert("ruangan sudah dipinjam");</script>';
-			echo '<script>window.location = document.referrer;</script>';
-		}else{
+		
+		
+		
 
 			$data = array(
 				'user_id'		=> $user_id,
-				'ruangan_id' 	=> $ruangan_id,
-				'tanggal'		=> $tanggal,
-				'alasan'		=> $alasan,
+				'ruko_id' 		=> $ruko_id,
+				'pembayaran'	=>$pembayaran,
 				'status'		=> "Pending"
 			);
 
-			$this->db->insert('pinjam', $data);
-			redirect('user/histori_user');
-		}
+			$this->db->insert('sewa', $data);
+			redirect('user/daftarRuangUser');
+		
 		
 	}
 
 	
 
-	public function accpinjam($query){
-		$this->db->select('r.nama_ruangan, r.kode_ruangan, u.nama, u.NIM, u.Jurusan, p.tanggal, p.alasan, p.id_pinjam');
-		$this->db->from('user as u, ruangan as r, pinjam as p');
-		$this->db->where('p.user_id = u.id');
-		$this->db->where('p.ruangan_id = r.id');
-		$this->db->where('p.id_pinjam',$query);
-		$data['title'] = "Sistem Peminjaman Ruangan";
-		$data['query'] = $this->db->get()->row();
-
-
-		$this->load->view('template/header', $data);
-		$this->load->view('user/template/sidebar');
-		$this->load->view('user/template/topbar');
-		$this->load->view('user/accPinjam');
-		$this->load->view('user/template/footer');
-		
-	}
+	
 
 	public function tolak($query){
 
@@ -192,9 +181,9 @@ class User extends CI_Controller {
 	public function terima($query){
 
 
-		$this->db->where('id_pinjam', $query);
-		$this->db->set('status','Diterima');
-		$this->db->update('pinjam');
+		$this->db->where('id', $query);
+		$this->db->set('status','Lunas');
+		$this->db->update('sewa');
 		redirect('user/histori');
 	}
 	public function logout()

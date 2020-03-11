@@ -1,4 +1,5 @@
-<?php foreach ($query->result() as $row) { ?>
+<?php 
+foreach ($query->result() as $row) { ?>
   <div class="container">
     <div class="col-md-12">
       <h1 class="mx-auto text-center mb-3">Form Peminjaman</h1>

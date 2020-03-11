@@ -21,7 +21,7 @@ class Auth extends CI_Controller
 
 
 		if ($this->form_validation->run() == null) {
-			$data['title'] = "Sistem Peminjaman Ruangan";
+			$data['title'] = "Seko - Sewa Ruko";
 			$this->load->view('template/header', $data);
 			$this->load->view('auth/login');
 			$this->load->view('template/footer');
@@ -46,8 +46,6 @@ class Auth extends CI_Controller
 			$data =[
 				'id'=>$user['id'],
 				'nama'=> $user['nama'],
-				'NIM'=>$user['NIM'],
-				'Jurusan'=>$user['Jurusan'],
 				'role_id'=>$user['role_id'],
 			];
 			
